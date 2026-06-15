@@ -5,6 +5,9 @@
 #include "RE/Skyrim.h"
 #include "SKSE/SKSE.h"
 
+// ImGui headers
+#include "imgui.h"
+
 namespace logger = SKSE::log;
 using namespace std::literals;
 
