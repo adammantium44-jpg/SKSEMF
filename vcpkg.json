@@ -12,7 +12,7 @@
     "directxmath",
     "directxtk",
     "boost-stl-interfaces"
-  ]
+  ],
   "overrides": [
     {
       "name": "fmt",
