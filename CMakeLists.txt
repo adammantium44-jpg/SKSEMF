@@ -114,8 +114,13 @@ function(addMenuFramework MENU_FRAMEWORK_FOLDER IMGUI_FOLDER)
 
     # Set ImGui directory to vcpkg installed location
     set(ImGui_DIR "${IMGUI_FOLDER}/x64-windows/lib/cmake/imgui")
-    list(APPEND CMAKE_PREFIX_PATH ${ImGui_DIR})
     
+    # Verify the ImGui config directory exists
+    if(NOT EXISTS "${ImGui_DIR}")
+        message(FATAL_ERROR "ImGui config directory not found at: ${ImGui_DIR}")
+    endif()
+    
+    list(APPEND CMAKE_PREFIX_PATH ${ImGui_DIR})
     find_package(ImGui CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE ImGui::imgui)
 
@@ -133,8 +138,8 @@ function(addMenuFramework MENU_FRAMEWORK_FOLDER IMGUI_FOLDER)
     )
 
     target_include_directories(
-	    ${PROJECT_NAME}
-	    PRIVATE
+        ${PROJECT_NAME}
+        PRIVATE
         "${MENU_FRAMEWORK_FOLDER}/SKSE Menu Framework DEV/SKSE/Plugins"
     )
 
