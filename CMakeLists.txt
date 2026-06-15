@@ -3,10 +3,6 @@ if(NOT DEFINED ENV{COMMONLIB_SSE_FOLDER})
   message(FATAL_ERROR "Missing COMMONLIB_SSE_FOLDER environment variable")
 endif()
 
-if(NOT DEFINED ENV{IMGUI_LIB_FOLDER})
-  message(FATAL_ERROR "Missing IMGUI_LIB_FOLDER environment variable")
-endif()
-
 if(NOT DEFINED ENV{SKYRIM_MODS_FOLDER})
   message(FATAL_ERROR "Missing SKYRIM_MODS_FOLDER environment variable")
 endif()
@@ -53,7 +49,7 @@ add_custom_target(Resource ALL DEPENDS ${RESOURCE_OUTPUT})
 
 
 
-# Drew W � 18.01.2024 02:44: Here is my CMakeLists.txt that uses FetchContent for NG
+# Drew W – 18.01.2024 02:44: Here is my CMakeLists.txt that uses FetchContent for NG
 include(FetchContent)
 
 set(ENABLE_SKYRIM_SE ON CACHE BOOL " " FORCE)
@@ -110,19 +106,13 @@ install(TARGETS ${PROJECT_NAME}
 
 
 
-function(addMenuFramework MENU_FRAMEWORK_FOLDER IMGUI_FOLDER)
+function(addMenuFramework MENU_FRAMEWORK_FOLDER)
 
-    # Set ImGui directory to vcpkg installed location
-    set(ImGui_DIR "${IMGUI_FOLDER}/x64-windows/lib/cmake/imgui")
+    # Find ImGui using standard find_package
+    # vcpkg will provide the proper CMake config files
+    find_package(imgui CONFIG REQUIRED)
     
-    # Verify the ImGui config directory exists
-    if(NOT EXISTS "${ImGui_DIR}")
-        message(FATAL_ERROR "ImGui config directory not found at: ${ImGui_DIR}")
-    endif()
-    
-    list(APPEND CMAKE_PREFIX_PATH ${ImGui_DIR})
-    find_package(ImGui CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ImGui::imgui)
+    target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
 
     add_library(SKSEMenuFramework SHARED IMPORTED GLOBAL)
     
@@ -140,14 +130,14 @@ function(addMenuFramework MENU_FRAMEWORK_FOLDER IMGUI_FOLDER)
     target_include_directories(
         ${PROJECT_NAME}
         PRIVATE
-        "${MENU_FRAMEWORK_FOLDER}/SKSE Menu Framework DEV/SKSE/Plugins"
+        "${MENU_FRAMEWORK_FOLDER}/SKSE Menu Framework${PROJECT_SUFFIX}/SKSE/Plugins"
     )
 
     target_link_libraries(${PROJECT_NAME} PRIVATE SKSEMenuFramework)
 
 endfunction()
 
-addMenuFramework("$ENV{SKYRIM_MODS_FOLDER}" "$ENV{IMGUI_LIB_FOLDER}")
+addMenuFramework("$ENV{SKYRIM_MODS_FOLDER}")
 
 function(copyOutputs TARGET_FOLDER)
     # If you specify an <OUTPUT_FOLDER> (including via environment variables)
