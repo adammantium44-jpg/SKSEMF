@@ -1,0 +1,57 @@
+name: Build SKSE Plugin
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      COMMONLIB_SSE_FOLDER: ${{ github.workspace }}\CommonLibSSE
+      IMGUI_LIB_FOLDER: ${{ github.workspace }}\imgui-install
+      SKYRIM_MODS_FOLDER: ${{ github.workspace }}\dummy-mods
+      SKYRIM_FOLDER: ${{ github.workspace }}\dummy-skyrim
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install MSVC and CMake
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Create dummy folders for env vars
+        run: |
+          mkdir "${{ env.SKYRIM_MODS_FOLDER }}"
+          mkdir "${{ env.SKYRIM_FOLDER }}"
+          mkdir "${{ env.SKYRIM_FOLDER }}\Data"
+
+      - name: Clone CommonLibSSE
+        run: |
+          git clone https://github.com/CharmedBaryon/CommonLibSSE "${{ env.COMMONLIB_SSE_FOLDER }}"
+
+      - name: Install ImGui (prebuilt) placeholder
+        run: |
+          mkdir "${{ env.IMGUI_LIB_FOLDER }}"
+          mkdir "${{ env.IMGUI_LIB_FOLDER }}\release"
+          mkdir "${{ env.IMGUI_LIB_FOLDER }}\release\lib"
+          mkdir "${{ env.IMGUI_LIB_FOLDER }}\release\lib\cmake"
+
+      - name: Configure
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Upload built DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: SKSE-plugin-dll
+          path: |
+            build/Release/*.dll
+            build/*.dll
+            ${{ env.SKYRIM_MODS_FOLDER }}/**/*.dll
