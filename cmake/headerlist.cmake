@@ -7,4 +7,3 @@ set(headers ${headers}
     include/IniBrowser.h
     include/IniEditor.h
 )
-)
