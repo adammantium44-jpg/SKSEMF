@@ -68,7 +68,8 @@ add_subdirectory("$ENV{COMMONLIB_SSE_FOLDER}" ${CMAKE_CURRENT_BINARY_DIR}/_deps/
 get_target_property(COMMONLIB_SRC_DIR CommonLibSSE SOURCE_DIR)
 
 # CLIB-UTIL
-find_path(CLIB_UTIL_INCLUDE_DIRS "ClibUtil/utils.hpp")
+# CLIB-UTIL - get from CommonLibSSE
+get_target_property(CLIB_UTIL_INCLUDE_DIRS CommonLibSSE INTERFACE_INCLUDE_DIRECTORIES)
 
 file(
   GLOB_RECURSE
