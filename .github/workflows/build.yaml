@@ -34,13 +34,17 @@ jobs:
         run: |
           git clone https://github.com/CharmedBaryon/CommonLibSSE "${{ env.COMMONLIB_SSE_FOLDER }}"
 
-      - name: Install vcpkg and spdlog
+      - name: Install vcpkg (manifest mode)
         run: |
           git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}\vcpkg"
           cd "${{ github.workspace }}\vcpkg"
           .\bootstrap-vcpkg.bat
-          .\vcpkg.exe install spdlog:x64-windows
           echo "CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
+
+      - name: Install dependencies via vcpkg manifest
+        run: |
+          cd "${{ github.workspace }}"
+          "${{ github.workspace }}\vcpkg\vcpkg.exe" install --triplet x64-windows
 
       - name: Dummy ImGui folders
         run: |
