@@ -11,9 +11,8 @@
     "rapidcsv",
     "directxmath",
     "directxtk",
-    "boost-stl-interfaces",
-    "clib-util"
-  ],
+    "boost-stl-interfaces"
+  ]
   "overrides": [
     {
       "name": "fmt",
