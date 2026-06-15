@@ -104,6 +104,19 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/extern/cmake-imgui/imgui
 )
 
+# Dear ImGui sources as a separate static library
+add_library(imgui-lib
+    extern/imgui/imgui.cpp
+    extern/imgui/imgui_draw.cpp
+    extern/imgui/imgui_tables.cpp
+    extern/imgui/imgui_widgets.cpp
+    extern/imgui/imgui_demo.cpp
+)
+
+target_include_directories(imgui-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/extern/imgui)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE imgui-lib)
+
 include(cmake/headerlist.cmake)
 include(cmake/sourcelist.cmake)
 
