@@ -1,6 +1,11 @@
 
 if(NOT DEFINED ENV{COMMONLIB_SSE_FOLDER})
-  message(FATAL_ERROR "Missing COMMONLIB_SSE_FOLDER environment variable")
+  # Try to use submodule first
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/CommonLibSSE/CMakeLists.txt")
+    set(ENV{COMMONLIB_SSE_FOLDER} "${CMAKE_CURRENT_SOURCE_DIR}/external/CommonLibSSE")
+  else()
+    message(FATAL_ERROR "Missing COMMONLIB_SSE_FOLDER environment variable or external/CommonLibSSE submodule")
+  endif()
 endif()
 
 if(NOT DEFINED ENV{SKYRIM_MODS_FOLDER})
