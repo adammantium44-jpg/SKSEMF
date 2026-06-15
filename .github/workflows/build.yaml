@@ -33,11 +33,20 @@ jobs:
           mkdir "${{ env.SKYRIM_FOLDER }}"
           mkdir "${{ env.SKYRIM_FOLDER }}\Data"
 
-      # Tidak perlu clone CommonLibSSE atau install vcpkg/imgui
-      # karena CommonLibSSE dari submodule dan ImGui dari extern/imgui
+      - name: Install vcpkg (manifest mode)
+        run: |
+          git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}\vcpkg"
+          cd "${{ github.workspace }}\vcpkg"
+          .\bootstrap-vcpkg.bat
+          echo "CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
+
+      - name: Install CommonLibSSE dependencies via vcpkg
+        run: |
+          cd "${{ github.workspace }}"
+          .\vcpkg\vcpkg.exe install --triplet x64-windows
 
       - name: Configure
-        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.CMAKE_TOOLCHAIN_FILE }}"
 
       - name: Build
         run: cmake --build build --config Release
