@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies via vcpkg manifest
         run: |
           cd "${{ github.workspace }}"
-          "${{ github.workspace }}\vcpkg\vcpkg.exe" install --triplet x64-windows
+          .\vcpkg\vcpkg.exe install --triplet x64-windows
 
       - name: Dummy ImGui folders
         run: |
