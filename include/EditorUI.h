@@ -4,6 +4,7 @@
 #include "INIConfig.h"
 #include <memory>
 #include <vector>
+#include "imgui.h"
 
 class EditorUI {
 public:
