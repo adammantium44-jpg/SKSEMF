@@ -6,7 +6,7 @@
 #include "SKSE/SKSE.h"
 
 // ImGui headers
-#include <extern/imgui/imgui.h>
+#include "imgui.h"
 
 namespace logger = SKSE::log;
 using namespace std::literals;
