@@ -100,6 +100,8 @@ target_include_directories(
 	${CLIB_UTIL_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/extern/cmake-imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/extern/cmake-imgui/imgui
 )
 
 include(cmake/headerlist.cmake)
