@@ -1,7 +1,5 @@
-set(sources ${sources}
-	src/plugin.cpp
-	src/UI.cpp
-	src/IniFile.cpp
-    src/IniBrowser.cpp
-    src/IniEditor.cpp
+set(sources
+    src/main.cpp
+    src/INIConfig.cpp
+    src/EditorUI.cpp
 )
