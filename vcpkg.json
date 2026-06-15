@@ -11,7 +11,8 @@
     "rapidcsv",
     "directxmath",
     "directxtk",
-    "boost-stl-interfaces"
+    "boost-stl-interfaces",
+    "imgui"
   ],
   "overrides": [
     {
