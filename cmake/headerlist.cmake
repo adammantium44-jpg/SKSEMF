@@ -3,4 +3,8 @@ set(headers ${headers}
 	include/PCH.h
 	include/SkyrimImgui.h
 	include/UI.h
+	include/IniFile.h
+    include/IniBrowser.h
+    include/IniEditor.h
+)
 )
