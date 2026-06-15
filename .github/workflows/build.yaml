@@ -2,9 +2,9 @@ name: Build SKSE Plugin
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/ini-editor ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feature/ini-editor ]
   workflow_dispatch:
 
 jobs:
@@ -12,14 +12,17 @@ jobs:
     runs-on: windows-latest
 
     env:
-      COMMONLIB_SSE_FOLDER: ${{ github.workspace }}\CommonLibSSE
-      IMGUI_LIB_FOLDER: ${{ github.workspace }}\vcpkg_installed
       SKYRIM_MODS_FOLDER: ${{ github.workspace }}\dummy-mods
       SKYRIM_FOLDER: ${{ github.workspace }}\dummy-skyrim
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
 
       - name: Install MSVC (toolchain)
         uses: microsoft/setup-msbuild@v2
@@ -30,24 +33,11 @@ jobs:
           mkdir "${{ env.SKYRIM_FOLDER }}"
           mkdir "${{ env.SKYRIM_FOLDER }}\Data"
 
-      - name: Clone CommonLibSSE
-        run: |
-          git clone https://github.com/CharmedBaryon/CommonLibSSE "${{ env.COMMONLIB_SSE_FOLDER }}"
-
-      - name: Install vcpkg (manifest mode)
-        run: |
-          git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}\vcpkg"
-          cd "${{ github.workspace }}\vcpkg"
-          .\bootstrap-vcpkg.bat
-          echo "CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
-
-      - name: Install dependencies via vcpkg manifest
-        run: |
-          cd "${{ github.workspace }}"
-          .\vcpkg\vcpkg.exe install --triplet x64-windows
+      # Tidak perlu clone CommonLibSSE atau install vcpkg/imgui
+      # karena CommonLibSSE dari submodule dan ImGui dari extern/imgui
 
       - name: Configure
-        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.CMAKE_TOOLCHAIN_FILE }}"
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build --config Release
