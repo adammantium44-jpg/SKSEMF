@@ -111,25 +111,21 @@ install(TARGETS ${PROJECT_NAME}
 
 function(addMenuFramework MENU_FRAMEWORK_FOLDER IMGUI_FOLDER)
 
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(IMGUI_INSTALL_DIR "${IMGUI_FOLDER}/debug")
-    else()
-        set(IMGUI_INSTALL_DIR "${IMGUI_FOLDER}/release")
-    endif()
+    # Set ImGui directory to vcpkg installed location
+    set(ImGui_DIR "${IMGUI_FOLDER}/x64-windows/lib/cmake/imgui")
+    list(APPEND CMAKE_PREFIX_PATH ${ImGui_DIR})
+    
+    find_package(ImGui CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ImGui::imgui)
 
+    add_library(SKSEMenuFramework SHARED IMPORTED GLOBAL)
+    
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(PROJECT_SUFFIX " DEV")
     else()
         set(PROJECT_SUFFIX "")
     endif()
-
-
-    set(ImGui_DIR "${IMGUI_INSTALL_DIR}/lib/cmake")
-    list(APPEND CMAKE_PREFIX_PATH ${ImGui_DIR})
-    find_package(ImGui CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ImGui::imgui)
-
-    add_library(SKSEMenuFramework SHARED IMPORTED GLOBAL)
+    
     set_target_properties(SKSEMenuFramework PROPERTIES
         IMPORTED_LOCATION "${MENU_FRAMEWORK_FOLDER}/SKSE Menu Framework${PROJECT_SUFFIX}/SKSE/Plugins/SKSEMenuFramework.dll"
         IMPORTED_IMPLIB "${MENU_FRAMEWORK_FOLDER}/SKSE Menu Framework${PROJECT_SUFFIX}/SKSE/Plugins/SKSEMenuFramework.lib"
