@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install MSVC and CMake
+      - name: Install MSVC (toolchain)
         uses: microsoft/setup-msbuild@v2
 
       - name: Create dummy folders for env vars
@@ -34,7 +34,15 @@ jobs:
         run: |
           git clone https://github.com/CharmedBaryon/CommonLibSSE "${{ env.COMMONLIB_SSE_FOLDER }}"
 
-      - name: Install ImGui (prebuilt) placeholder
+      - name: Install vcpkg and spdlog
+        run: |
+          git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}\vcpkg"
+          cd "${{ github.workspace }}\vcpkg"
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe install spdlog:x64-windows
+          echo "CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
+
+      - name: Dummy ImGui folders
         run: |
           mkdir "${{ env.IMGUI_LIB_FOLDER }}"
           mkdir "${{ env.IMGUI_LIB_FOLDER }}\release"
@@ -42,7 +50,7 @@ jobs:
           mkdir "${{ env.IMGUI_LIB_FOLDER }}\release\lib\cmake"
 
       - name: Configure
-        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.CMAKE_TOOLCHAIN_FILE }}"
 
       - name: Build
         run: cmake --build build --config Release
